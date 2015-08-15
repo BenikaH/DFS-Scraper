@@ -1,5 +1,6 @@
 from lib import scraper, make_db_stats, query_db
 import datetime
+import argparse
 
 """
 Notes:
@@ -18,7 +19,7 @@ def auto_dates(sport):
     # Get yesterdays date (dont want games in progress)
     end_date = datetime.date.today() - datetime.timedelta(days=1)
 
-    if start_date > end_date:
+    if start_date >= end_date:
         return []
 
     return date_range([start_date, end_date])
@@ -61,31 +62,61 @@ def format_date(date_str):
         return [int(formatted_date[x:y]) for x, y in zip([0, 4, 6], [4, 6, 8])]
 
 
-def main(sport, dates='auto'):
+def get_args():
+    opt = argparse.ArgumentParser(prog='DFS-Scraper')
+
+    opt.add_argument("-b", "--begin",
+                     type=int,
+                     help="""Start date of data fetching.
+                             Format: YYYYMMDD""")
+
+    opt.add_argument("-e", "--end",
+                     type=int,
+                     help="""Start date of data fetching.
+                             Format: YYYYMMDD""")
+
+    opt.add_argument("-s", "--sport",
+                     type=str,
+                     required=True,
+                     choices=['baseball'],
+                     help="""Sport to fetch stats for.""")
+
+    return opt.parse_args()
+
+
+def write_to_log(date, errors):
+    """
+    This takes a pretty primative approach to logging the errors but I think
+    it should be more than enough for now.
+    """
+    with open('log.txt', 'a') as f:
+        f.write(str(date)+'\n')
+        for line in errors:
+            f.write(line)
+
+
+def main(sport, date_list):
     """
     Updates all of the data for the given dates in the given sport.
-    :param sport:
-    :param dates:
-    :return:
     """
-    if dates == 'auto':
-        date_list = auto_dates(sport)
-    else:
-        if type(dates) is list:
-            date_list = date_range(dates)
-        else:
-            date_list = date_range([dates, dates])
 
     sport_class = {'baseball': make_db_stats.Baseball,
                    'basketball': make_db_stats.Basketball}
 
     for date in date_list:
+        errors = []
         print date
 
         # List to hold the scraped data from RotoGuru
-        scraped_data = [player for site_list in
-                        [scraper.get_roto_info(date, site, sport) for site in ['fd', 'dk']]
-                        for player in site_list]
+        try:
+            scraped_data = [player for site_list in
+                            [scraper.get_roto_info(date, site, sport) for site in ['fd', 'dk']]
+                            for player in site_list]
+        except Exception, e:
+            errors.append("    Failed to scrape website data\n")
+            errors.append("    {}\n".format(e))
+            errors.append("\n")
+            continue
 
         player_objs = {}
         for player_data in scraped_data:
@@ -100,18 +131,48 @@ def main(sport, dates='auto'):
                     player_objs[player_id].update_salary(player_data[3], site)
 
             except Exception, e:
-                # Add logging info
-                pass
+                errors.append("    Failed to make class\n")
+                errors.append("    for player data: {}\n".format(player_data))
+                errors.append("    {}\n".format(e))
+                errors.append("\n")
+                continue
 
-        stat_list = [obj.gen_db_stats() for obj in player_objs.values()]
+        # stat_list = [obj.gen_db_stats() for obj in player_objs.values()]
+        stat_list = []
+        for obj in player_objs.values():
+            try:
+                stat_list.append(obj.gen_db_stats())
+
+            except Exception, e:
+                errors.append("    Failed to generate stats\n")
+                errors.append("    for player data: {}\n".format(obj.__dict__))
+                errors.append("    {}\n".format(e))
+                errors.append("\n")
+                continue
 
         for player in stat_list:
             try:
                 query_db.write_lines(player, sport)
 
             except Exception, e:
-                # Add logging info
-                pass
+                errors.append("    Failed to write to DB\n")
+                errors.append("    for player data: {}\n".format(player))
+                errors.append("    {}\n".format(e))
+                errors.append("\n")
+                continue
+
+        if errors:
+            write_to_log(date, errors)
+
 
 if __name__ == '__main__':
-    main('baseball', '20150813')
+    args = get_args()
+
+    if args.begin and args.end:
+        dates = date_range([args.begin, args.end])
+    elif args.begin and not args.end:
+        dates = date_range([args.begin, args.begin])
+    else:
+        dates = auto_dates(args.sport)
+
+    main(args.sport, dates)
