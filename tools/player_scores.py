@@ -84,12 +84,11 @@ def main():
     headers = ['fname', 'lname', 'id', 'mean', 'stdev', 'ratio']
     results = get_data()
     if args.mode == 'print':
-        print 'print'
+        print_table(results, headers)
     elif args.mode == 'csv':
-        print 'csv'
+        write_csv(results, headers)
     else:
         return
-    #print_table(results, headers)
 
 
 if __name__ == '__main__':
