@@ -1,11 +1,11 @@
 import MySQLdb
-import sys
 from ConfigParser import ConfigParser
+import os
 
 class DB:
     def __init__(self):
         parser = ConfigParser()
-        parser.read('{}/db.ini'.format(sys.path[0]))
+        parser.read('{}/db.ini'.format(os.path.dirname(os.path.dirname(__file__))))
         user = parser.get('db', 'user')
         password = parser.get('db', 'password')
         db = parser.get('db', 'database')
