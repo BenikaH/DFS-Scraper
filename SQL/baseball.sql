@@ -29,6 +29,7 @@ CREATE TABLE `rguru_pitchers`(
     Hold INT,
     CG INT
 )
+CREATE INDEX id1 ON `rguru_pitchers` (id);
 
 
 DROP TABLE IF EXISTS `rguru_hitters`
@@ -63,3 +64,4 @@ CREATE TABLE `rguru_hitters`(
     HBP INT,
     E INT
 )
+CREATE INDEX id1 ON `rguru_hitters` (id);
