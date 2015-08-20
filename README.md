@@ -16,11 +16,10 @@ This program will scrape the data from RotoGuru.com DraftKings and FanDuel table
     * Set -s (--sport) for sport wanted (mandatory) (Only baseball supported for now)
     * Set -b (--begin) as YYYYMMDD int for starting date
     * Set -e (--end) same as start date for end date
+      - Setting -b without -e will fetch a single date
+      - Omitting -b and -e will fetch the last DB entry and current date as start and end 
     * Set -l (--logging) to F to disable logging (defaults to T)
-    Note: 
-        - Setting -b without -e will fetch a single date
-        - Omitting -b and -e will fetch the last DB entry and current date as start and end 
-        - Logging is a simple feature manually written to write errors to text file, font think I need full logging capabilities (i.e. from python logging module) for time being
+      - Logging is a simple feature manually written to write errors to text file, font think I need full logging capabilities (i.e. from python logging module) for time being
             
 ##Notes: 
 Only baseball is supported at the moment but football and basketball shouldnt be too far away.  
