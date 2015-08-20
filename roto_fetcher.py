@@ -81,6 +81,12 @@ def get_args():
                      choices=['baseball'],
                      help="""Sport to fetch stats for.""")
 
+    opt.add_argument("-l", "--logging",
+                     type=str,
+                     choices=['T', 'F'],
+                     default='T',
+                     help="""Set logging to be on or off.""")
+
     return opt.parse_args()
 
 
@@ -95,7 +101,7 @@ def write_to_log(date, errors):
             f.write(line)
 
 
-def main(sport, date_list):
+def main(sport, date_list, logging=True):
     """
     Updates all of the data for the given dates in the given sport.
     """
@@ -161,7 +167,7 @@ def main(sport, date_list):
                 errors.append("\n")
                 continue
 
-        if errors:
+        if errors and logging is True:
             write_to_log(date, errors)
 
 
@@ -175,4 +181,9 @@ if __name__ == '__main__':
     else:
         dates = auto_dates(args.sport)
 
-    main(args.sport, dates)
+    if args.logging == 'F':
+        logging = False
+    else:
+        logging = True
+
+    main(args.sport, dates, logging)
