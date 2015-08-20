@@ -12,6 +12,13 @@ This program will scrape the data from RotoGuru.com DraftKings and FanDuel table
 ##To Start: 
 1. Create tables using the schema in the SQL folder
 2. Edit the db.ini file with your DB credentials
-3. run roto_fetcher.py and edit the call to the main function at the end of the script
-
-More detailed write-up coming soon... 
+3. Run roto_fetcher.py from command and edit arguments -s, -b, -e: 
+    * Set -s (--sport) for sport wanted (mandatory) (Only baseball supported for now)
+    * Set -b (--begin) as YYYYMMDD int for starting date
+    * Set -e (--end) same as start date for end date
+    Note: 
+        - Setting -b without -e will fetch a single date
+        - Omitting -b and -e will fetch the last DB entry and current date as start and end 
+    
+##Notes: 
+Only baseball is supported at the moment but football and basketball shouldnt be too far away.  
