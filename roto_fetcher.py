@@ -16,8 +16,13 @@ def auto_dates(sport):
     # Get latest entry in the db
     start_date = query_db.get_last_entry(sport)
 
-    # Get yesterdays date (dont want games in progress)
-    end_date = datetime.date.today() - datetime.timedelta(days=1)
+    # Get int weeks for football
+    if sport == 'football':
+        end_date = 17
+        return range(start_date + 1, end_date + 1)
+    else:
+        # Get yesterdays date (dont want games in progress)
+        end_date = datetime.date.today() - datetime.timedelta(days=1)
 
     if start_date >= end_date:
         return []
@@ -40,6 +45,21 @@ def date_range(range_list):
 
     return [end_date - datetime.timedelta(days=n) for n in range(delta.days+1)]
 
+
+def football_dates(beg, end):
+    """
+    Gets the football dates.  Because the football dates are read as weeks, need
+    a different approach than basketball and baseball.
+    """
+    acceptable_vals = [None] + range(1,18)
+    if beg not in acceptable_vals and end not in acceptable_vals:
+        print "Date is not formatted properly"
+        raise SystemExit
+
+    if end is None:
+        return [beg]
+    else:
+        return range(beg, end+1)
 
 def format_date(date_str):
     """
@@ -78,7 +98,7 @@ def get_args():
     opt.add_argument("-s", "--sport",
                      type=str,
                      required=True,
-                     choices=['baseball'],
+                     choices=['baseball', 'football'],
                      help="""Sport to fetch stats for.""")
 
     opt.add_argument("-l", "--logging",
@@ -107,7 +127,8 @@ def main(sport, date_list, logging=True):
     """
 
     sport_class = {'baseball': make_db_stats.Baseball,
-                   'basketball': make_db_stats.Basketball}
+                   'basketball': make_db_stats.Basketball,
+                   'football': make_db_stats.Football}
 
     for date in date_list:
         errors = []
@@ -174,12 +195,18 @@ def main(sport, date_list, logging=True):
 if __name__ == '__main__':
     args = get_args()
 
-    if args.begin and args.end:
-        dates = date_range([args.begin, args.end])
-    elif args.begin and not args.end:
-        dates = date_range([args.begin, args.begin])
+    if args.sport != 'football':
+        if args.begin and args.end:
+            dates = date_range([args.begin, args.end])
+        elif args.begin and not args.end:
+            dates = date_range([args.begin, args.begin])
+        else:
+            dates = auto_dates(args.sport)
     else:
-        dates = auto_dates(args.sport)
+        if args.begin:
+            dates = football_dates(args.begin, args.end)
+        else:
+            dates = auto_dates(args.sport)
 
     if args.logging == 'F':
         logging = False

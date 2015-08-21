@@ -66,7 +66,7 @@ def get_date(date, sport):
     """
     # Return early because football date will be in weeks.
     if sport == 'football':
-        return str(date)
+        return 'week={}'.format(str(date))
 
     # convert date obj to strings and make sure single digit days have leading 0
     day, month, year = str(date.day).zfill(2), str(date.month), str(date.year)

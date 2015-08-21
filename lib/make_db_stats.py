@@ -8,17 +8,15 @@ class Player(object):
         """
         See specific sport subclasses for game_record format.
         """
-        # self.date = date.replace('_', '')
-        self.date = date # Use datetime.date instead
+        self.date = date
         self.name = game_record[1]
-                # Should just be able to create these in methods
         self.fd_position = None
         self.fd_pts = None
         self.fd_salary = None
         self.dk_position = None
         self.dk_pts = None
         self.dk_salary = None
-        self.team = game_record[4]
+        self.team = game_record[4].upper()
         self.opp = self.format_opp(game_record[5])
         self.id = game_record[-1]
 
@@ -40,7 +38,7 @@ class Player(object):
         # Get rid of double-header indicator if it exists
         name = name.split('(')[0]
 
-        if loc == 'v':
+        if loc == 'v' or loc == 'v.':
             self.home_game = 'Y'
         elif loc == '@':
             self.home_game = 'N'
@@ -49,7 +47,7 @@ class Player(object):
 
     def format_position(self, position):
         """Defer to subclass"""
-        pass
+        return position
 
     def format_stats(self, stat_dict):
         """
@@ -329,3 +327,12 @@ class Basketball(Player):
 
             # Delete old keys & stats
             del self.stats[key]
+
+class Football(Player):
+    def __init__(self, date, game_record):
+        self.stats = {}
+        Player.__init__(self, date, game_record)
+
+    def get_stat_order(self):
+        return ['id', 'name', 'date', 'dk_position', 'dk_pts', 'dk_salary', 'fd_position', 'fd_pts',
+                'fd_salary', 'team', 'opp', 'home_game']
