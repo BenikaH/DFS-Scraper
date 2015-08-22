@@ -1,7 +1,7 @@
 # DFS-Scraper
 
 ##Description
-This program will scrape the data from RotoGuru.com DraftKings and FanDuel tables and add it to a MySQL database. It fetches data like the salary and points by each player of a given date and also shows some of the basic stats.  It is fully functional for MLB with NBA and NFL not being to far behind. 
+This program will scrape the data from RotoGuru.com DraftKings and FanDuel tables and add it to a MySQL database. It fetches data like the salary and points by each player of a given date and also shows some of the basic stats.  It is fully functional for MLB and NFL with NBA not being too far behind. 
 
 ##Requirements
 * Python 2.6
@@ -22,4 +22,4 @@ This program will scrape the data from RotoGuru.com DraftKings and FanDuel table
       - Logging is a simple feature manually written to write errors to text file, font think I need full logging capabilities (i.e. from python logging module) for time being
             
 ##Notes: 
-Only baseball is supported at the moment but football and basketball shouldnt be too far away.  
+Now compatible with NFL football. To use, run with '-s football' and specify date in weeks as int 1-17 instead of date.  
