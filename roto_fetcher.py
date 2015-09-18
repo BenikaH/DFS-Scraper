@@ -5,6 +5,14 @@ import argparse
 """
 Notes:
 
+To Do:
+- Figure out football dates
+
+- Finalize basketball functionality
+
+- Fix crude implementation of logging errors.
+- Maybe use logging module (may be overkill for this project though)
+
 """
 
 
