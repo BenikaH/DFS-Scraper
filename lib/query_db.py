@@ -49,8 +49,8 @@ def get_last_entry(sport):
         q = "SELECT MAX(week) AS date from rguru_stats"
     elif sport == 'baseball':
         q = "SELECT MAX(date) AS date from rguru_hitters"
-    else:
-        return
+    elif sport == 'basketball':
+        q = "SELECT MAX(date) AS date from rguru_stats"
 
     last_date = cursor.query(q)[0][0]
 
@@ -60,6 +60,8 @@ def get_last_entry(sport):
             last_date = datetime.date(2015, 4, 5)
         elif sport == 'football':
             last_date = 1
+        elif sport == 'basketball':
+            last_date = datetime.date(2014,10,28)
 
     cursor.finish()
 
@@ -88,6 +90,9 @@ def write_lines(stat_line, sport):
             q.append(["INSERT INTO rguru_pitchers VALUES({})".format(','.join(['%s']*len(stat_line))), stat_line])
     elif sport == 'football':
         q.append(["DELETE FROM rguru_stats WHERE id = %s AND week = %s", (player_id, date)])
+        q.append(["INSERT INTO rguru_stats VALUES({})".format(','.join(['%s']*len(stat_line))), stat_line])
+    elif sport == 'basketball':
+        q.append(["DELETE FROM rguru_stats WHERE id = %s AND date = %s", (player_id, date)])
         q.append(["INSERT INTO rguru_stats VALUES({})".format(','.join(['%s']*len(stat_line))), stat_line])
 
     for query in q:

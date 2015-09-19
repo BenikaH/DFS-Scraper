@@ -22,9 +22,6 @@ def fetch_player_data(url, sport, site):
     html = requests.get(url)
     soup = BeautifulSoup(html.content)
 
-    td_by_sport = {'baseball': 8, 'basketball': 8, 'football': 5}
-    num_td_tags = td_by_sport[sport]
-
     all_data = []
 
     for n, player_row in enumerate(soup.find_all('tr')):
@@ -34,7 +31,9 @@ def fetch_player_data(url, sport, site):
 
         # Only way i've found to differentiate player tr rows from
         # others is by number of td tags they contain.
-        if num_td_tags == len(player_row.find_all('td')):
+        if len(player_row.findParents('table')) == 0 and\
+                player_row.find('td', {'colspan':False}) and\
+                len(player_row.find_all('b')) == 0:
             player_id = urlparse(player_row.find('a')['href']).query
             # Get the td tag text and format it.
             player_data = [data.text.replace(u'\xa0', u'').strip() for data in player_row.find_all('td')]
@@ -116,3 +115,22 @@ def get_roto_info(date, site, sport):
     url = get_url(date, site, sport)
 
     return fetch_player_data(url, sport, site)
+
+
+def save_html(html, fname):
+    """
+    This will save the html from the website to a file. This is
+    useful when testing to not have to keep making requests to the site.
+    """
+    fname = fname.strip('.html')
+    with open('html/{}.html'.format(fname), 'w') as f:
+        f.write(html)
+
+
+def load_sample_html(fname):
+    """
+    Loads the sample html from a file.
+    """
+    fname = fname.strip('.html')
+    with open('html/{}.html'.format(fname), 'r') as f:
+        return f.read()

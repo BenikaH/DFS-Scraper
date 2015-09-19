@@ -306,7 +306,7 @@ class Basketball(Player):
         formats a couple that are specific to basketball.
         :return:
         """
-        stat_dict = {stat:0 for stat in ['pt', 'rb', 'as', 'st', 'bl', 'to', 'trey',
+        stat_dict = {stat: 0 for stat in ['pt', 'rb', 'as', 'st', 'bl', 'tovr', 'trey',
                                          'fg', 'ft']}
         self.stats = Player.format_stats(self, stat_dict)
 
@@ -327,6 +327,12 @@ class Basketball(Player):
 
             # Delete old keys & stats
             del self.stats[key]
+
+    def get_stat_order(self):
+        return ['id', 'name', 'date', 'dk_position', 'dk_pts', 'dk_salary', 'fd_position', 'fd_pts',
+                'fd_salary', 'team', 'opp', 'home_game', 'mins', 'pt', 'rb', 'as', 'st', 'bl', 'tovr',
+                'trey', 'fg_made', 'fg_att', 'ft_made', 'ft_att']
+
 
 class Football(Player):
     def __init__(self, date, game_record):
