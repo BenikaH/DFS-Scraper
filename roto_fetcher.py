@@ -29,8 +29,12 @@ def auto_dates(sport):
         end_date = 17
         return range(start_date + 1, end_date + 1)
     else:
-        # Get yesterdays date (dont want games in progress)
-        end_date = datetime.date.today() - datetime.timedelta(days=1)
+        last_date_of_season = {'basketball': datetime.date(2015, 4, 15),
+                               'baseball': datetime.date(2015, 10, 4)}
+        # Get yesterday to skip games in progress.
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        # Get the earlier date between current date and last day of season.
+        end_date = min(last_date_of_season[sport], yesterday)
 
     if start_date >= end_date:
         return []
@@ -106,7 +110,7 @@ def get_args():
     opt.add_argument("-s", "--sport",
                      type=str,
                      required=True,
-                     choices=['baseball', 'football'],
+                     choices=['baseball', 'football', 'basketball'],
                      help="""Sport to fetch stats for.""")
 
     opt.add_argument("-l", "--logging",
@@ -172,7 +176,6 @@ def main(sport, date_list, logging=True):
                 errors.append("\n")
                 continue
 
-        # stat_list = [obj.gen_db_stats() for obj in player_objs.values()]
         stat_list = []
         for obj in player_objs.values():
             try:
