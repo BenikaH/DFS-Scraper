@@ -23,3 +23,4 @@ This program will scrape the data from RotoGuru.com DraftKings and FanDuel table
             
 ##Notes: 
 Now compatible with NFL football. To use, run with '-s football' and specify date in weeks as int 1-17 instead of date.  
+(9/19) Now compatible with basketball. Use '-s basketball' and dates similar to baseball.  Will word for dates from opening day of 2014-2015 season (Oct 28 2014) to the end of the regular season (Apr 15 2015).
