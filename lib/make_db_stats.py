@@ -297,7 +297,7 @@ class Basketball(Player):
         else:
             self.start = 'N'
 
-        lname, fname = self.name.split(',')
+        lname, fname = [x.strip() for x in self.name.split(',')]
         self.name = '{} {}'.format(fname, lname)
 
     def format_stats(self):
