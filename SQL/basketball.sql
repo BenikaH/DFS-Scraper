@@ -21,7 +21,7 @@ CREATE TABLE `rguru_stats`(
     asst INT,
     stl INT,
     blk INT,
-    tovr INT,
+    `to` INT,
     trey INT,
     fg_made INT,
     fg_att INT,
