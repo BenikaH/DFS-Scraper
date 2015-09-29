@@ -104,7 +104,7 @@ def get_roto_info(date, site, sport):
     """
     Main function to call other functions necessary to get info.
     :param date:
-        format = 2015_06_15 or int <= 17 for football
+        format = datetime.date obj or int <= 17 for football
     :param site:
         'fd' or 'dk'
     :param sport:
