@@ -143,6 +143,7 @@ class Player(object):
         elif site == 'fd':
             self.fd_salary = salary
 
+
 class Baseball(Player):
     def __init__(self, date, game_record):
         """
@@ -327,6 +328,9 @@ class Basketball(Player):
 
             # Delete old keys & stats
             del self.stats[key]
+
+        self.stats['tovr'] = self.stats['to']
+        del self.stats['to']
 
     def get_stat_order(self):
         return ['id', 'name', 'date', 'dk_position', 'dk_pts', 'dk_salary', 'fd_position', 'fd_pts',
